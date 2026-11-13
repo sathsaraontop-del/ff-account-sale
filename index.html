@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMIN SATHEE - FF ACCOUNT SALE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0a0000;color:#fff;overflow-x:hidden}
+#loader{position:fixed;inset:0;background:#000;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#loader img{width:90%;max-width:420px;border-radius:20px;border:3px solid red;box-shadow:0 0 40px red}
+#loader h1{margin-top:15px;font-size:32px;letter-spacing:2px;color:#ff2222;text-shadow:0 0 20px red}
+#loader p{color:#ccc;margin-top:5px}
+.bar{width:80%;max-width:350px;height:10px;background:#333;border-radius:20px;margin-top:18px;overflow:hidden}
+.bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,red,#ff9900);transition:.3s}
+header{padding:15px;text-align:center;background:linear-gradient(180deg,#2b0000,#0a0000);border-bottom:2px solid red}
+header h2{font-size:26px;color:#ff2222}
+header p{font-size:13px;color:#ccc}
+.cats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:12px}
+.cats button{padding:9px 14px;border:1px solid red;background:#1a0000;color:#fff;border-radius:20px;cursor:pointer}
+.cats button.active{background:red}
+#grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:#1a0000;border:1px solid #ff3333;border-radius:15px;overflow:hidden}
+.card img{width:100%;height:150px;object-fit:cover}
+.card div{padding:10px}
+.card h3{font-size:15px}
+.card p{font-size:13px;color:#ffb3b3;margin:4px 0}
+.price{color:#00ff88;font-weight:bold}
+.btn{display:block;text-align:center;background:#25D366;color:#fff;padding:8px;border-radius:10px;text-decoration:none;margin-top:8px;font-weight:bold}
+#adminPanel{display:none;background:#111;border:2px solid red;margin:12px;padding:14px;border-radius:15px}
+#adminPanel input,#adminPanel select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none}
+#adminPanel button{width:100%;padding:11px;background:red;color:#fff;border:none;border-radius:10px;font-weight:bold;cursor:pointer}
+.del{background:#333!important;margin-top:5px!important}
+footer{text-align:center;padding:20px;color:#777;font-size:12px}
+footer b{color:#555;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="loader">
+<img src="https://i.ibb.co/placeholder.jpg" alt="ADMIN SATHEE">
+<h1>ADMIN SATHEE</h1>
+<p>🔥 FF ACCOUNT SALE 🔥</p>
+<div class="bar"><i id="loadBar"></i></div>
+<p id="loadTxt">Loading... 0%</p>
+</div>
+<header><h2>🔥 ADMIN SATHEE 🔥</h2><p>FF ACCOUNT SALE | 100% Trusted ❤️ | Book karanna Rs.60/-</p></header>
+<div class="cats">
+<button class="active" onclick="filterCat('All',this)">All</button>
+<button onclick="filterCat('Level',this)">🔰 Level</button>
+<button onclick="filterCat('Sultan',this)">👑 Sultan</button>
+<button onclick="filterCat('Evo',this)">💎 Evo / Rare</button>
+<button onclick="filterCat('Low',this)">💰 Low Price</button>
+</div>
+<div id="adminPanel">
+<h3>🔒 ADMIN PANEL - ADD NEW ACCOUNT</h3>
+<input id="aTitle" placeholder="Account Name Ex: Lv 70 Sultan Acc">
+<input id="aPrice" placeholder="Price Ex: Rs. 5000">
+<input id="aLevel" placeholder="Level Ex: Lv 70">
+<input id="aImg" placeholder="Photo Link / Image URL">
+<select id="aCat"><option value="Level">Level Accounts</option><option value="Sultan">Sultan Accounts</option><option value="Evo">Evo / Rare Accounts</option><option value="Low">Low Price Accounts</option></select>
+<button onclick="addAcc()">+ ADD ACCOUNT</button>
+<button onclick="logout()" class="del">Logout</button>
+</div>
+<div id="grid"></div>
+<div style="text-align:center;padding:10px"><a class="btn" style="display:inline-block;padding:12px 20px" href="https://wa.me/94762391167?text=Hi%20Sathee%20FF%20Account%20ganna%20one">💬 Chat on WhatsApp - 0762391167</a></div>
+<footer><b id="secretBtn" onclick="secretClick()">ADMIN SATHEE</b> • © 2026 • 100% Trusted</footer>
+<script>
+let accounts = JSON.parse(localStorage.getItem('sathee_accs') || '[]');
+if(accounts.length===0){accounts=[{title:'Lv 68 Sultan Acc',price:'Rs. 4500',level:'Lv 68',cat:'Sultan',img:'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600'},{title:'Lv 75 Evo Max Acc',price:'Rs. 8000',level:'Lv 75',cat:'Evo',img:'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=600'},{title:'Lv 55 Budget Acc',price:'Rs. 1200',level:'Lv 55',cat:'Low',img:'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600'},{title:'Lv 62 Level Acc',price:'Rs. 2500',level:'Lv 62',cat:'Level',img:'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600'},];}
+let cur='All', isAdmin=false, clicks=0;
+function save(){localStorage.setItem('sathee_accs',JSON.stringify(accounts))}
+function render(){let g=document.getElementById('grid'); g.innerHTML='';accounts.filter(a=>cur==='All'||a.cat===cur).forEach((a,i)=>{g.innerHTML+=`<div class="card"><img src="${a.img}"><div><h3>${a.title}</h3><p>${a.level} • ${a.cat}</p><div class="price">${a.price}</div><a class="btn" href="https://wa.me/94762391167?text=${encodeURIComponent('Hi Sathee, me account eka ganna one: '+a.title+' - '+a.price)}">Buy Now</a>${isAdmin?`<button class="del" onclick="delAcc(${i})" style="width:100%;padding:8px;background:#333;color:#fff;border:none;border-radius:8px;margin-top:5px">Delete</button>`:''}</div></div>`;});if(g.innerHTML==='') g.innerHTML='<p style="text-align:center;padding:20px">Thama account na bng.</p>';}
+function filterCat(c,el){cur=c;document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
+function addAcc(){let t=document.getElementById('aTitle').value, p=document.getElementById('aPrice').value, l=document.getElementById('aLevel').value, im=document.getElementById('aImg').value, c=document.getElementById('aCat').value;if(!t||!p) return alert('Title & Price danna bng');accounts.unshift({title:t,price:p,level:l||'',cat:c,img:im||'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600'});save(); render(); alert('Account Added ✅');}
+function delAcc(i){ if(confirm('Delete karannada?')){accounts.splice(i,1);save();render()} }
+function secretClick(){ clicks++; if(clicks>=3){ clicks=0; let pw=prompt('Admin Password:'); if(pw==='sathee123'){ isAdmin=true; document.getElementById('adminPanel').style.display='block'; render(); alert('Welcome Admin Sathee 🔥'); } else alert('Wrong Password ❌'); } }
+function logout(){ isAdmin=false; document.getElementById('adminPanel').style.display='none'; render(); }
+let pr=0; let iv=setInterval(()=>{ pr+=10; document.getElementById('loadBar').style.width=pr+'%'; document.getElementById('loadTxt').innerText='Loading... '+pr+'%'; if(pr>=100){ clearInterval(iv); setTimeout(()=>document.getElementById('loader').style.display='none',300); } },200);
+render();
+</script>
+</body>
+  </html>
